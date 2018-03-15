@@ -28,6 +28,7 @@
 
         <label for="title">Job Role</label>
         <select id="title" name="user_title">
+          <option value="">Select Job Role</option>
           <option value="full-stack js developer">Full Stack JavaScript Developer</option>
           <option value="front-end developer">Front End Developer</option>
           <option value="back-end developer">Back End Developer</option>
@@ -44,8 +45,9 @@
         <div>
           <label for="size">Size:</label>
           <select id="size" name="user_size">
+            <option value=""></option>
             <option value="small">S</option>
-            <option value="medium" selected>M</option>
+            <option value="medium">M</option>
             <option value="large">L</option>
             <option value="extra large">XL</option>
           </select>
@@ -54,7 +56,7 @@
         <div>
           <label for="design">Design:</label>
           <select id="design" name="user_design">
-            <option>Select Theme</option>
+            <option value="">Select Theme</option>
             <option value="js puns">Theme - JS Puns</option>
             <option value="heart js">Theme - I &#9829; JS</option>
           </select>
@@ -63,6 +65,7 @@
         <div id="colors-js-puns" class="">
           <label for="color">Color:</label>
           <select id="color">
+            <option value="">Select Color</option>
             <option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>
             <option value="darkslategrey">Dark Slate Grey (JS Puns shirt only)</option>
             <option value="gold">Gold (JS Puns shirt only)</option>
@@ -89,7 +92,7 @@
 
         <label for="payment">I'm going to pay with:</label>
         <select id="payment" name="user_payment">
-          <option value="select_method">Select Payment Method</option>
+          <option value="">Select Payment Method</option>
           <option value="credit card">Credit Card</option>
           <option value="paypal">PayPal</option>
           <option value="bitcoin">Bitcoin</option>
@@ -111,6 +114,8 @@
             <label for="cvv">CVV:</label>
             <input id="cvv" name="user_cvv" type="text">
           </div>
+
+          <div class="clearfix"></div>
 
           <label for="exp-month">Expiration Date:</label>
           <select id="exp-month" name="user_exp-month">
