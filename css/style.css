@@ -154,24 +154,32 @@ button:hover {
 ==================================== */
 
 .error {
-  border-color: red;
+  border-color: firebrick;
   background-color: rgba(255, 222, 235, 0.5);
 }
 
 .error:focus {
-  border-color: red;
+  border-color: firebrick;
   border-radius: 5px;
+}
+
+.error-header {
+  font-size: 1.25em;
+  font-style: italic;
+  color: firebrick;
+  text-align: left;
+  margin-bottom: 15px;
 }
 
 .error-message {
   font-size: .9em;
   font-weight: bold;
-  color: red;
+  color: firebrick;
   text-align: center;
 }
 
 .activities-error {
-  color: red;
+  color: firebrick;
   font-weight: bold;
 }
 

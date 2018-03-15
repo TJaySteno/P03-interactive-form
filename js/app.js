@@ -8,7 +8,7 @@ const testValue = (value, regex) => {
 
 const loadColors = design => {
   const designIsPuns = design === 'js puns';
-  $('#color').children().each((index, tshirtColor) => {
+  $('#color').children().each((i, tshirtColor) => {
     const colorIsPuns = $(tshirtColor).text().indexOf('JS Puns') >= 0;
     const match = (colorIsPuns === designIsPuns) || ($(tshirtColor).val() === '');
     ( match ? $(tshirtColor).show(): $(tshirtColor).hide() );
@@ -24,18 +24,16 @@ const configureSchedule = $element => {
   // toggleActivities
 }
 
+// Reset payment display, then load the proper div
 const loadPaymentMethod = $paymentMenu => {
-  $paymentMenu.parent().children('div').each((index, element) => $(element).hide());
+  $paymentMenu.parent().children('div').each((i, element) => $(element).hide());
+  $('#credit-card').children('div').each((i, div) => errorHandler($(div).children('input'), false) );
+  $('#credit-card').children('select').each((i, select) => errorHandler($(select), false) );
+
   if ($paymentMenu.val() === 'credit card') $('#credit-card').fadeIn(300);
   else if ($paymentMenu.val() === 'paypal') $('#paypal').fadeIn(300);
   else if ($paymentMenu.val() === 'bitcoin') $('#bitcoin').fadeIn(300);
 }
-
-
-
-
-
-
 
 const errorHandler = (element, turnOn, message) => {
   const $element = $(element);
@@ -43,17 +41,15 @@ const errorHandler = (element, turnOn, message) => {
 
   if (turnOn) {
     $element.addClass('error');
-    const $label = $(`<label class="error-message"></label>`);
-    if (message) $label.text(message);
-    $element.after($label);
+    if (message) {
+      const $label = $(`<label class="error-message"></label>`);
+      $label.text(message);
+      $element.after($label);
+    }
   } else {
     $element.removeClass('error');
   }
 }
-
-
-
-
 
 // Takes the name field and tests its value to either throw error or
 const validateName = $nameField => {
@@ -93,14 +89,14 @@ const validateSize = $sizeMenu => {
   else errorHandler($sizeMenu, false);
 }
 
-const validateDesign = $designMenu => {
+const validateDesign = ($designMenu, newColors) => {
   const test = testValue($designMenu.val());
   if (!test.hasValue) {
     errorHandler($designMenu, true);
     $('#colors-js-puns').hide();
   } else {
     errorHandler($designMenu, false);
-    loadColors($designMenu.val());
+    if (newColors) loadColors($designMenu.val());
   }
 }
 
@@ -123,15 +119,56 @@ const validatePayment = ($paymentMenu, newMethod) => {
   if (newMethod) loadPaymentMethod($paymentMenu);
 }
 
+const validateCCN = $ccnField => {
+  const regex = /^\d{13,16}$/;
+  const test = testValue($ccnField.val(), regex);
+  if (!test.hasValue) errorHandler($ccnField, true, 'Enter your credit card number above');
+  else if (!test.valid) errorHandler($ccnField, true, 'Enter 13-16 digits');
+  else errorHandler($ccnField, false);
+}
 
+const validateZip = $zipField => {
+  const regex = /^\d{5}$/;
+  const test = testValue($zipField.val(), regex);
+  if (!test.hasValue) errorHandler($zipField, true, 'Enter zip');
+  else if (!test.valid) errorHandler($zipField, true, '5 digits');
+  else errorHandler($zipField, false);
+}
 
+const validateCVV = $cvvField => {
+  const regex = /^\d{3}$/;
+  const test = testValue($cvvField.val(), regex);
+  if (!test.hasValue) errorHandler($cvvField, true, 'Enter CVV');
+  else if (!test.valid) errorHandler($cvvField, true, '3 digits');
+  else errorHandler($cvvField, false);
+}
 
+const validateExpiration = ($monthMenu, $yearMenu) => {
+  const currentMonth = new Date().getMonth() + 1;
+  const currentYear = new Date().getFullYear();
 
+  if ( currentYear < Number($yearMenu.val())
+    || (currentYear === Number($yearMenu.val()) && currentMonth < Number($monthMenu.val())) ) {
+      errorHandler($monthMenu, false);
+      errorHandler($yearMenu, false)
+  } else {
+      errorHandler($monthMenu, true);
+      errorHandler($yearMenu, true, 'Double check expiration dates');
+  }
+}
 
-
+const validateCreditCard = $creditCardDiv => {
+  validateCCN($creditCardDiv.children('#cc-num'));
+  validateZip($creditCardDiv.children('#zip'));
+  validateCVV($creditCardDiv.children('#cvv'));
+  validateExpiration($creditCardDiv.children('#exp-month'),
+                     $creditCardDiv.children('#exp-year'));
+}
 
 // This function validates every form element
-const validateForm = () => {
+const validateForm = e => {
+  e.preventDefault()
+
 
   validateName($('#name'));
   validateEmail($('#mail'));
@@ -145,19 +182,23 @@ const validateForm = () => {
   validateActivities($('.activities'));
 
   validatePayment($('#payment'));
-  if ($('#payment').val() === 'credit card') validateCC($('#credit-card'));
+  if ($('#payment').val() === 'credit card') validateCreditCard($('#credit-card'));
 
+
+  if ($('.error').length) {
+    document.location.replace(`#`);
+    $($('legend')[0]).after('<label class="error-header">You seem to have missed something</label>');
+  } else $(this).unbind('validateForm').submit();
 }
 
-/****************** APP ******************/
+/****************** APP EXECUTION ******************/
 
+$('#name').focus();
 $('#other-title').hide();
 $('#colors-js-puns').hide();
 $('#credit-card').hide();
 $('#paypal').hide();
 $('#bitcoin').hide();
-
-$('#name').focus();
 
 
 
@@ -167,9 +208,14 @@ $('#title').change(e => { validateTitle($(e.target)) });
 $('#other-title').focusout(e => { validateOtherTitle($(e.target)) });
 
 $('#size').change(e => { validateSize($(e.target)) });
-$('#design').change(e => { validateDesign($(e.target)) });
+$('#design').change(e => { validateDesign($(e.target), true) });
 $('#colors-js-puns').change(e => { validateColor($(e.target)) });
 
 $('.activities input').change(e => { configureSchedule($(e.target)) });
 
 $('#payment').change(e => { validatePayment($(e.target), true) });
+$('#cc-num').focusout(e => { validateCCN($(e.target)) });
+$('#zip').focusout(e => { validateZip($(e.target)) });
+$('#cvv').focusout(e => { validateCVV($(e.target)) });
+
+$('button').click(e => { validateForm(e) });
