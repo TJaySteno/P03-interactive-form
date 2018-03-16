@@ -46,16 +46,16 @@ const toggleActivities = (classInfo, toggle) => {
   const classes = $('.activities').children();
   if (classInfo.day === 'Tuesday' && classInfo.time === '9am') {
     if (toggle === 'allow') {
-      allowClass(classes[2], true);
-      allowClass(classes[4], true);
-    } else if (classes[2].firstChild.checked) allowClass(classes[4], false);
-    else allowClass(classes[2], false);
+      formatClass(classes[2], true);
+      formatClass(classes[4], true);
+    } else if (classes[2].firstChild.checked) formatClass(classes[4], false);
+    else formatClass(classes[2], false);
   } else if (classInfo.day === 'Tuesday' && classInfo.time === '1pm') {
     if (toggle === 'allow') {
-      allowClass(classes[3], true);
-      allowClass(classes[5], true);
-    } else if (classes[3].firstChild.checked) allowClass(classes[5], false);
-    else allowClass(classes[3], false);
+      formatClass(classes[3], true);
+      formatClass(classes[5], true);
+    } else if (classes[3].firstChild.checked) formatClass(classes[5], false);
+    else formatClass(classes[3], false);
   }
 }
 
