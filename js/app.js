@@ -77,12 +77,15 @@ $(window).ready(() => {
   const configureSchedule = $element => {
     const classInfo = getClassInfo($element.parent().text());
 
-    if ($element.prop('checked')) {
-      toggleActivities(classInfo, 'disallow');
-      calculateTotalPrice(classInfo.price, '+'); }
-    else {
-      toggleActivities(classInfo, 'allow');
-      calculateTotalPrice(classInfo.price, '-'); }
+    if ($element.css('visibility') === 'visible'
+    || !$element.css('visibility')) {
+      if ($element.prop('checked')) {
+        toggleActivities(classInfo, 'disallow');
+        calculateTotalPrice(classInfo.price, '+'); }
+        else {
+          toggleActivities(classInfo, 'allow');
+          calculateTotalPrice(classInfo.price, '-'); }
+    }
   }
 
   // Reset payment display, then load the proper div
@@ -303,10 +306,10 @@ $(window).ready(() => {
   $('.activities').append($('<h4>Total Price: $ <span class="price">0</span></h4>'));
 
   // Event Listeners
-  $('#name').focusout(e => { validateName($(e.target)) });
-  $('#mail').focusout(e => { validateEmail($(e.target)) });
+  $('#name').keyup(e => { validateName($(e.target)) });
+  $('#mail').keyup(e => { validateEmail($(e.target)) });
   $('#title').change(e => { validateTitle($(e.target)) });
-  $('#other-title').focusout(e => { validateOtherTitle($(e.target)) });
+  $('#other-title').keyup(e => { validateOtherTitle($(e.target)) });
 
   $('#size').change(e => { validateSize($(e.target)) });
   $('#design').change(e => { validateDesign($(e.target), true) });
@@ -315,9 +318,9 @@ $(window).ready(() => {
   $('.activities input').change(e => { configureSchedule($(e.target)) });
 
   $('#payment').change(e => { validatePayment($(e.target), true) });
-  $('#cc-num').focusout(e => { validateCCN($(e.target)) });
-  $('#zip').focusout(e => { validateZip($(e.target)) });
-  $('#cvv').focusout(e => { validateCVV($(e.target)) });
+  $('#cc-num').keyup(e => { validateCCN($(e.target)) });
+  $('#zip').keyup(e => { validateZip($(e.target)) });
+  $('#cvv').keyup(e => { validateCVV($(e.target)) });
   $('#exp-year').focusout(e => { validateExpiration($(e.target).parent().find('#exp-month'), $(e.target)) });
 
   $('button').click(e => { validateForm(e) });
